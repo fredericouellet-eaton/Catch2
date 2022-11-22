@@ -25,24 +25,30 @@ namespace Catch {
 #    pragma GCC diagnostic ignored "-Wextra"
     // Did you know that comparing floats with `0` directly
     // is super-duper dangerous in unevaluated context?
-#    pragma GCC diagnostic ignored "-Wfloat-equal"
 #endif
+#pragma GCC diagnostic ignored "-Wfloat-equal"
 
-#define CATCH_DEFINE_COMPARABLE_TRAIT( id, op )                               \
-    template <typename, typename, typename = void>                            \
-    struct is_##id##_comparable : std::false_type {};                         \
-    template <typename T, typename U>                                         \
-    struct is_##id##_comparable<                                              \
-        T,                                                                    \
-        U,                                                                    \
-        void_t<decltype( std::declval<T>() op std::declval<U>() )>>           \
-        : std::true_type {};                                                  \
-    template <typename, typename = void>                                      \
-    struct is_##id##_0_comparable : std::false_type {};                       \
-    template <typename T>                                                     \
-    struct is_##id##_0_comparable<T,                                          \
-                                  void_t<decltype( std::declval<T>() op 0 )>> \
-        : std::true_type {};
+#define CATCH_DEFINE_COMPARABLE_TRAIT( id, op )                           \
+    template <typename T, typename U> class is_##id##_comparable {        \
+        template <typename, typename> static std::false_type test( ... ); \
+                                                                          \
+        template <typename X, typename Y>                                 \
+        static auto test( int )                                           \
+            -> decltype( std::declval<X>() op std::declval<Y>(),          \
+                         std::true_type() );                              \
+                                                                          \
+    public:                                                               \
+        static const bool value = decltype( test<T, U>( 0 ) )::value;     \
+    };                                                                    \
+    template <typename T> class is_##id##_0_comparable {                  \
+        template <typename> static std::false_type test( ... );           \
+                                                                          \
+        template <typename X>                                             \
+        static auto test( int ) -> decltype( std::declval<X>() op 0, std::true_type() );    \
+                                                                          \
+    public:                                                               \
+        static const bool value = decltype( test<T>( 0 ) )::value;        \
+    };
 
         // We need all 6 pre-spaceship comparison ops: <, <=, >, >=, ==, !=
         CATCH_DEFINE_COMPARABLE_TRAIT( lt, < )

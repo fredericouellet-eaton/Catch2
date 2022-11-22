@@ -22,61 +22,76 @@
 #include <stdexcept>
 
 namespace {
-    [[noreturn]]
-    void this_throws() {
-        throw std::runtime_error("Some msg");
-    }
-    void this_doesnt_throw() {}
+    //[[noreturn]]
+    //void this_throws() {
+    //    throw std::runtime_error("Some msg");
+    //}
+    //void this_doesnt_throw() {}
 }
+
+namespace Catch {
+    namespace Detail {
+        static_assert( is_eq_comparable<int, double>::value, "" );
+        static_assert( !is_eq_comparable<int, std::vector<int>>::value, "" );
+        static_assert( negation<is_eq_comparable<int, std::vector<int>>>::value, "" );
+        static_assert(
+            conjunction<is_eq_comparable<int, double>,
+                        negation<is_eq_comparable<int, std::vector<int>>>>::value,
+            "" );
+    }
+}
+
 
 CATCH_TEST_CASE("PrefixedMacros") {
     using namespace Catch::Matchers;
 
-    CATCH_REQUIRE( 1 == 1 );
-    CATCH_REQUIRE_FALSE( 1 != 1 );
+    auto  f = Catch::Decomposer() <= 1    == 2L ;
 
-    CATCH_REQUIRE_THROWS(this_throws());
-    CATCH_REQUIRE_THROWS_AS(this_throws(), std::runtime_error);
-    CATCH_REQUIRE_THROWS_WITH(this_throws(), "Some msg");
-    CATCH_REQUIRE_THROWS_MATCHES(this_throws(), std::runtime_error, Predicate<std::runtime_error>([](std::runtime_error const&) { return true; }));
-    CATCH_REQUIRE_NOTHROW(this_doesnt_throw());
+    //CATCH_REQUIRE( 1 == 1 );
+    //CATCH_REQUIRE_FALSE( 1 != 1 );
 
-    CATCH_CHECK( 1 == 1 );
-    CATCH_CHECK_FALSE( 1 != 1 );
-    CATCH_CHECKED_IF( 1 == 1 ) {
-        CATCH_SUCCEED("don't care");
-    } CATCH_CHECKED_ELSE ( 1 == 1 ) {
-        CATCH_SUCCEED("don't care");
-    }
+    //CATCH_REQUIRE_THROWS(this_throws());
+    //CATCH_REQUIRE_THROWS_AS(this_throws(), std::runtime_error);
+    //CATCH_REQUIRE_THROWS_WITH(this_throws(), "Some msg");
+    //CATCH_REQUIRE_THROWS_MATCHES(this_throws(), std::runtime_error, Predicate<std::runtime_error>([](std::runtime_error const&) { return true; }));
+    //CATCH_REQUIRE_NOTHROW(this_doesnt_throw());
 
-    CATCH_CHECK_NOFAIL(1 == 2);
+    //CATCH_CHECK( 1 == 1 );
+    //CATCH_CHECK_FALSE( 1 != 1 );
+    //CATCH_CHECKED_IF( 1 == 1 ) {
+    //    CATCH_SUCCEED("don't care");
+    //} CATCH_CHECKED_ELSE ( 1 == 1 ) {
+    //    CATCH_SUCCEED("don't care");
+    //}
 
-    CATCH_CHECK_THROWS(this_throws());
-    CATCH_CHECK_THROWS_AS(this_throws(), std::runtime_error);
-    CATCH_CHECK_THROWS_WITH(this_throws(), "Some msg");
-    CATCH_CHECK_THROWS_MATCHES(this_throws(), std::runtime_error, Predicate<std::runtime_error>([](std::runtime_error const&) { return true; }));
-    CATCH_CHECK_NOTHROW(this_doesnt_throw());
+    //CATCH_CHECK_NOFAIL(1 == 2);
 
-    CATCH_REQUIRE_THAT("abcd", Equals("abcd"));
-    CATCH_CHECK_THAT("bdef", Equals("bdef"));
+    //CATCH_CHECK_THROWS(this_throws());
+    //CATCH_CHECK_THROWS_AS(this_throws(), std::runtime_error);
+    //CATCH_CHECK_THROWS_WITH(this_throws(), "Some msg");
+    //CATCH_CHECK_THROWS_MATCHES(this_throws(), std::runtime_error, Predicate<std::runtime_error>([](std::runtime_error const&) { return true; }));
+    //CATCH_CHECK_NOTHROW(this_doesnt_throw());
 
-    CATCH_INFO( "some info" );
-    CATCH_UNSCOPED_INFO( "some info" );
-    CATCH_WARN( "some warn" );
-    CATCH_SECTION("some section") {
-        int i = 1;
-        CATCH_CAPTURE( i );
-        CATCH_CAPTURE( i, i + 1 );
-        CATCH_DYNAMIC_SECTION("Dynamic section: " << i) {
-            CATCH_FAIL_CHECK( "failure" );
-        }
-    }
+    //CATCH_REQUIRE_THAT("abcd", Equals("abcd"));
+    //CATCH_CHECK_THAT("bdef", Equals("bdef"));
 
-    CATCH_STATIC_REQUIRE( std::is_void<void>::value );
-    CATCH_STATIC_REQUIRE_FALSE( std::is_void<int>::value );
-    CATCH_STATIC_CHECK( std::is_void<void>::value );
-    CATCH_STATIC_CHECK_FALSE( std::is_void<int>::value );
-    CATCH_FAIL("");
+    //CATCH_INFO( "some info" );
+    //CATCH_UNSCOPED_INFO( "some info" );
+    //CATCH_WARN( "some warn" );
+    //CATCH_SECTION("some section") {
+    //    int i = 1;
+    //    CATCH_CAPTURE( i );
+    //    CATCH_CAPTURE( i, i + 1 );
+    //    CATCH_DYNAMIC_SECTION("Dynamic section: " << i) {
+    //        CATCH_FAIL_CHECK( "failure" );
+    //    }
+    //}
+
+    //CATCH_STATIC_REQUIRE( std::is_void<void>::value );
+    //CATCH_STATIC_REQUIRE_FALSE( std::is_void<int>::value );
+    //CATCH_STATIC_CHECK( std::is_void<void>::value );
+    //CATCH_STATIC_CHECK_FALSE( std::is_void<int>::value );
+    //CATCH_FAIL("");
 }
 
 // Missing:

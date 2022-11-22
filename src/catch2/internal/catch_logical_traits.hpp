@@ -13,13 +13,13 @@
 namespace Catch {
 namespace Detail {
 
-#if defined( __cpp_lib_logical_traits ) && __cpp_lib_logical_traits >= 201510
-
-    using std::conjunction;
-    using std::disjunction;
-    using std::negation;
-
-#else
+//#if defined( __cpp_lib_logical_traits ) && __cpp_lib_logical_traits >= 201510
+//
+//    using std::conjunction;
+//    using std::disjunction;
+//    using std::negation;
+//
+//#else
 
     template <class...> struct conjunction : std::true_type {};
     template <class B1> struct conjunction<B1> : B1 {};
@@ -36,7 +36,7 @@ namespace Detail {
     template <class B>
     struct negation : std::integral_constant<bool, !bool(B::value)> {};
 
-#endif
+//#endif
 
 } // namespace Detail
 } // namespace Catch
