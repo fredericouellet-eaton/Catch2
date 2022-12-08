@@ -219,6 +219,11 @@ if (NOT_SUBPROJECT)
 
     set(CPACK_PACKAGE_CONTACT "https://github.com/catchorg/Catch2/")
 
+    export(TARGETS Catch2 
+           NAMESPACE Catch2::
+           FILE ${CMAKE_BINARY_DIR}/Catch2Targets.cmake)
+
+    export(PACKAGE ${CMAKE_PROJECT_NAME})
 
     include( CPack )
 
